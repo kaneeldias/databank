@@ -1,0 +1,133 @@
+<div fxLayout="row" fxLayoutAlign="center center">
+    <mat-card class="example-card">
+        <mat-card-header>
+            <div mat-card-avatar class="example-header-image"
+                style="background-image: url('https://www.bing.com/th?id=OIP.4VOwN8cHerjklA2zDU_PBwHaEK&pid=Api&rs=1&p=0');   background-size: cover;">
+            </div>
+            <mat-card-title>Generate</mat-card-title>
+            <mat-card-subtitle>Select options</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content fxLayout="column" fxLayoutGap="10px grid">
+
+            <div layout="row" fxFlex=100>
+                <mat-form-field>
+                    <mat-label>Metric</mat-label>
+                    <mat-select [(ngModel)]="selected_metric">
+                        <mat-option *ngFor="let metric of metrics" [value]="metric">
+                            {{metric.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+
+            <div fxLayout="row" fxLayoutGap="20px grid">
+
+                <mat-form-field>
+                    <mat-label>Start</mat-label>
+                    <mat-select [(ngModel)]="start">
+                        <mat-option *ngFor="let year of years" [value]="year">
+                            {{year}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>End</mat-label>
+                    <mat-select [(ngModel)]="end">
+                        <mat-option *ngFor="let year of years" [value]="year">
+                            {{year}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div fxLayout="column" fxLayoutGap="10px grid">
+                <label style="color:#999999">Compare against</label>
+                <mat-radio-group [(ngModel)]="compare" (change)="change()" fxLayout="row" fxLayoutGap="20px grid">
+                    <mat-radio-button value="Country">Country</mat-radio-button>
+                    <mat-radio-button value="South Asia">South Asia</mat-radio-button>
+                    <mat-radio-button value="Asia">Asia</mat-radio-button>
+                    <mat-radio-button value="World">World</mat-radio-button>
+                </mat-radio-group>
+
+                <mat-form-field *ngIf="compare=='Country'">
+                    <mat-label>Country</mat-label>
+                    <mat-select [(ngModel)]="selected_country">
+                        <mat-option *ngFor="let country of countries" [value]="country">
+                            {{country}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div fxLayout="column">
+                <button mat-raised-button color="primary" (click)="submit()">Generate</button>
+            </div>
+
+        </mat-card-content>
+    </mat-card>
+</div>
+
+<style>
+    .info_box .title {
+        color: rgba(0, 0, 0, 0.54);
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .info_box .val {
+        color: rgba(0, 0, 0, 0.87);
+        font-size: 14px;
+    }
+
+    .info_box .val mat-icon {
+        font-size: 14px;
+    }
+</style>
+
+<mat-card style="margin-top:30px;" *ngIf="loaded">
+
+    <mat-card-header style="z-index:2">
+        <div mat-card-avatar class="example-header-image"
+            style="background-image: url('https://www.bing.com/th?id=OIP.4VOwN8cHerjklA2zDU_PBwHaEK&pid=Api&rs=1&p=0');   background-size: cover;">
+        </div>
+        <mat-card-title style="z-index:2">{{gen.metric.name}}</mat-card-title>
+        <mat-card-subtitle style="z-index:2">Sri Lanka vs {{gen.compare}}</mat-card-subtitle>
+        <mat-card-subtitle style="z-index:2">{{gen.start}} to {{gen.end}}</mat-card-subtitle>
+
+    </mat-card-header>
+
+    <div fxLayout="row" fxLayoutGap="20px grid">
+        <div fxLayout="column" fxLayoutGap="20px grid">
+            <div class="info_box" fxLayout="column">
+                <div class="info_box title">Sri Lankan Average</div>
+                <div class="info_box val">
+                    {{info.sl_avg | number : '1.2-2'}}{{gen.metric.units}}
+
+                    <!--<mat-icon matSuffix style="color:green" *ngIf="changes.helpdesk_reads > 0">trending_up
+                                                </mat-icon>
+                                                <mat-icon matSuffix style="color:red" *ngIf="changes.helpdesk_reads < 0">trending_down
+                                                </mat-icon>-->
+                </div>
+            </div>
+
+            <div class="info_box" fxLayout="column">
+                <div class="info_box title">{{gen.compare}} Average</div>
+                <div class="info_box val">
+                    {{info.cp_avg | number : '1.2-2'}}{{gen.metric.units}}
+
+                    <!--<mat-icon matSuffix style="color:green" *ngIf="changes.helpdesk_reads > 0">trending_up
+                                                    </mat-icon>
+                                                    <mat-icon matSuffix style="color:red" *ngIf="changes.helpdesk_reads < 0">trending_down
+                                                    </mat-icon>-->
+                </div>
+            </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="center center" style="margin-top:-15px; margin-left:20px;">
+            <google-chart *ngIf="loaded" [data]="chartData"></google-chart>
+        </div>
+    </div>
+
+
+</mat-card>
